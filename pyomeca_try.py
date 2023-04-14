@@ -32,7 +32,7 @@ keysList = c['parameters']['ROTATION']['LABELS']['value']
 
 # Get rotation data
 rotation_data = c['data']['rotations']
-# Reorder rotation data to make pose label first last
+# Reorder rotation data to make pose label first last (not required)
 rotation_data_transposed  = np.transpose(rotation_data, (2, 0, 1, 3))
 
 l_thigh_4X4 = rotation_data_transposed[keysList.index('l_thigh_4X4')]
