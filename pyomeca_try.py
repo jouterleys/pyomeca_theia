@@ -8,7 +8,7 @@ import os
 import tkinter
 from tkinter import filedialog
 
-from pyomeca import Rototrans, Angles, Markers
+from pyomeca import Rototrans, Angles
 from ezc3d import c3d
 import numpy as np
 

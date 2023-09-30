@@ -9,7 +9,8 @@ import os
 import tkinter
 from tkinter import filedialog
 
-from pyomeca import Rototrans, Angles, Markers
+from pyomeca import Rototrans, Markers
+
 from ezc3d import c3d
 import numpy as np
 
@@ -55,9 +56,14 @@ LHEEL_POS_Markers = Markers(LHEEL_POS)
 
 # Extract l_foot pose
 l_foot_4X4 = rotation_data_transposed[keysList.index('l_foot_4X4')]
+# Convert the last colum to meters?
+l_foot_4X4[0:3, 3,:] /= 1000
 # Turn into pyomeca Rototrans object
 l_foot_4X4 = Rototrans(l_foot_4X4)
+
 # Get location of LHEEL in Global
-LHEEL = Markers.from_rototrans(LHEEL_POS_Markers, l_foot_4X4)
+L_HEEL = Markers.from_rototrans(LHEEL_POS_Markers, l_foot_4X4)
 # Plot LHEEL
-LHEEL.isel(axis=1).plot.line(x="time")
+L_HEEL.isel(axis=2).plot.line(x="time")
+# Check first frame
+L_HEEL.isel(time=0)
