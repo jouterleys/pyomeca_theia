@@ -11,6 +11,9 @@ from tkinter import filedialog
 
 from pyomeca import Rototrans, Markers
 
+from scipy.signal import find_peaks
+import matplotlib.pyplot as plt
+
 from ezc3d import c3d
 import numpy as np
 
@@ -64,6 +67,28 @@ l_foot_4X4 = Rototrans(l_foot_4X4)
 # Get location of LHEEL in Global
 L_HEEL = Markers.from_rototrans(LHEEL_POS_Markers, l_foot_4X4)
 # Plot LHEEL
-L_HEEL.isel(axis=2).plot.line(x="time")
+L_HEEL.sel(axis='z').plot.line(x="time")
 # Check first frame
 L_HEEL.isel(time=0)
+
+# Get LHEEL with respect to Pelvis (i.e. Zeni)
+# Extract l_foot pose
+pelvis_shifted_4X4 = rotation_data_transposed[keysList.index('pelvis_shifted_4X4')]
+# Convert the last colum to meters?
+pelvis_shifted_4X4[0:3, 3,:] /= 1000
+# Turn into pyomeca Rototrans object
+pelvis_shifted_4X4 = Rototrans(pelvis_shifted_4X4)
+# Find transpose
+pelvis_shifted_4X4_t = Rototrans.from_transposed_rototrans(pelvis_shifted_4X4)
+# LHEEL_pelvis
+LHEEL_wrt_pelvis = Markers.from_rototrans(L_HEEL, pelvis_shifted_4X4_t)
+# Plot y component
+LHEEL_wrt_pelvis.sel(axis='y').plot.line(x="time")
+# Find peaks for Heel Strikes Zeni
+peaks, _ = find_peaks(LHEEL_wrt_pelvis.sel(axis='y').data.flatten())
+# Plot
+for peak in peaks:
+    plt.axvline(x=peak,color='g')
+ax = plt.gca()
+ax.set_xlim(1000,2000)
+plt.show()

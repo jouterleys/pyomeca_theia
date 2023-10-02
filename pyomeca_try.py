@@ -12,6 +12,9 @@ from pyomeca import Rototrans, Angles
 from ezc3d import c3d
 import numpy as np
 
+import matplotlib.pyplot as plt
+
+
 # Reset tkinter
 root = tkinter.Tk()
 root.withdraw()
@@ -55,4 +58,7 @@ l_knee_angles = Angles.from_rototrans(l_knee_rt,'xyz')
 
 l_knee_angles = np.degrees(l_knee_angles)
 
-l_knee_angles.isel(axis=0).plot.line(x="time")
+ax = plt.gca()
+l_knee_angles.sel(axis=0).plot.line(x="time")
+ax.set_xlim(1000,1300)
+plt.show()
